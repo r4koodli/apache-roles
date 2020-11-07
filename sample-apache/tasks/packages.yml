@@ -1,0 +1,40 @@
+---
+- name: install packages
+  yum:
+    name:
+      - "{{ http_pkg }}"
+      - "{{ firewall_pkg }}"
+      - "{{ php_pkg }}"
+      - "{{ mod_pkg  }}"
+    state: latest
+  register: pkgs
+- debug:
+    var: pkgs
+
+- name: start and enable httpd service
+  service:
+    name: "{{ http_srv }}"
+    enabled: true
+    state: started
+
+- name: start and enable firewalld service
+  service:
+    name: "{{ firewall_srv }}"
+    enabled: true
+    state: started
+
+- name: web page content
+  template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+  notify: restart_httpd
+
+- name: allow access to web server
+  firewalld:
+    service: "{{ rule }}"
+    state: enabled
+    permanent: true
+    immediate: true
+  with_items:
+    - 80/tcp
+    - 443/tcp
