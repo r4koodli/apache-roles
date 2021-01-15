@@ -1,0 +1,29 @@
+---
+# tasks file for promisc
+- name: Copy script file to ansible worker nodes
+  copy:
+    src:  /home/vagrant/promisc/files/promisc.service
+    dest: /etc/systemd/system/promisc.service
+  when: ansible_os_family == "RedHat"
+
+- name: Copy script file to ansible worker nodes
+  copy:
+    src:  /home/vagrant/promisc/files/promisc.service
+    dest: /etc/systemd/system/promisc.service
+  when: ansible_os_family == "Debian"
+
+
+- name: Enable and Start Promisc Service
+  service:
+    name: promisc
+    enabled: true
+    state: started
+
+- name: Check if Proiscus service is running
+  command: ip addr
+  register: ipaddr
+
+- debug:
+    var: ipaddr
+
+

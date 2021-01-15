@@ -1,0 +1,6 @@
+---
+- name: Enable Promiscus service on all the nodes
+  hosts: ubuntu
+  become: yes
+  roles:
+    - /home/vagrant/promisc 
